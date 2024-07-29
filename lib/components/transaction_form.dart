@@ -1,10 +1,28 @@
 import 'package:flutter/material.dart';
 
-class TransactionForm extends StatelessWidget {
-  TransactionForm({super.key});
+class TransactionForm extends StatefulWidget {
+  const TransactionForm(this.onSubmit, {super.key});
 
+  final void Function(String, double) onSubmit;
+
+  @override
+  State<TransactionForm> createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
   final titleController = TextEditingController();
+
   final valueController = TextEditingController();
+
+  _submitForm() {
+    final title = titleController.text;
+    final value = double.tryParse(valueController.text) ?? 0;
+
+    if (title.isEmpty || value <= 0) {
+      return;
+    }
+    widget.onSubmit(title, value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +34,7 @@ class TransactionForm extends StatelessWidget {
           children: [
             TextField(
               controller: titleController,
+              onSubmitted: (_) => _submitForm(),
               decoration: const InputDecoration(
                 labelStyle: TextStyle(color: Colors.grey),
                 labelText: 'Título',
@@ -23,6 +42,9 @@ class TransactionForm extends StatelessWidget {
             ),
             TextField(
               controller: valueController,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              onSubmitted: (_) => _submitForm(),
               decoration: const InputDecoration(
                 labelStyle: TextStyle(color: Colors.grey),
                 labelText: 'Valor (R\$)',
@@ -32,14 +54,7 @@ class TransactionForm extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton(
-                  onPressed: () => {
-                    print(titleController.text),
-                    print(valueController.text),
-                  },
-                  style: ButtonStyle(
-                    foregroundColor: WidgetStateProperty.all(
-                        const Color.fromARGB(255, 145, 10, 0)),
-                  ),
+                  onPressed: _submitForm,
                   child: const Text('Nova transação'),
                 ),
               ],
