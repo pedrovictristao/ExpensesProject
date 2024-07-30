@@ -11,57 +11,62 @@ class TransactionList extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 300,
-      child: ListView.builder(
-        itemCount: transactions.length,
-        itemBuilder: (ctx, index) {
-          final tr = transactions[index];
-          return Card(
-            child: Row(
-              children: [
-                Container(
+      child: transactions.isEmpty
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Nenhuma transação cadastrada',
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 200,
+                    child: Image.asset(
+                      'assets/images/waiting.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              itemCount: transactions.length,
+              itemBuilder: (ctx, index) {
+                final tr = transactions[index];
+                return Card(
+                  elevation: 5,
                   margin: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 10,
+                    vertical: 8,
+                    horizontal: 5,
                   ),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.black,
-                      width: 2,
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: const Color.fromARGB(255, 142, 2, 177),
+                      radius: 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: FittedBox(
+                            child: Text(
+                          'R\$${tr.value}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        )),
+                      ),
                     ),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: Text(
-                    tr.value.toStringAsFixed(2),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: Color.fromARGB(255, 135, 10, 160),
-                    ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
+                    title: Text(
                       tr.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    Text(
+                    subtitle: Text(
                       DateFormat('d MMM y').format(tr.date),
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 92, 91, 91),
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
-                  ],
-                )
-              ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }
