@@ -5,6 +5,7 @@ import 'package:expenses/components/transaction_form.dart';
 import 'package:expenses/components/transaction_list.dart';
 import 'package:expenses/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main(List<String> args) {
   runApp(const ExpensesApp());
@@ -15,6 +16,9 @@ class ExpensesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp],
+    );
     final ThemeData tema = ThemeData();
 
     return MaterialApp(
@@ -112,29 +116,44 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appBar = AppBar(
+      title: const Text('Despesas pessoais'),
+      // actions: [
+      //   IconButton(
+      //     onPressed: () => _openTransactionFormModal(context),
+      //     icon: const Icon(Icons.add),
+      //   ),
+      // ],
+    );
+
+    final availableHeight = MediaQuery.of(context).size.height -
+        appBar.preferredSize.height -
+        MediaQuery.of(context).padding.top;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Despesas pessoais'),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () => _openTransactionFormModal(context),
-        //     icon: const Icon(Icons.add),
-        //   ),
-        // ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Chart(recentTransactions: _recentTransactions),
-            TransactionList(_transactions, _removeTransaction),
+            SizedBox(
+              height: availableHeight * 0.3,
+              child: Chart(recentTransactions: _recentTransactions),
+            ),
+            SizedBox(
+              height: availableHeight * 0.7,
+              child: TransactionList(_transactions, _removeTransaction),
+            ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openTransactionFormModal(context),
-        backgroundColor: Colors.greenAccent,
-        child: const Icon(Icons.add),
+        backgroundColor: const Color.fromARGB(255, 142, 2, 177),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
